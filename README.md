@@ -6,6 +6,7 @@ A Spring Boot REST API application for managing products with PostgreSQL databas
 
 - REST API endpoints for product management
 - PostgreSQL database integration
+- Liquibase database migration management
 - Input validation
 - CRUD operations (Create, Read, Update, Delete)
 - Maven project management
@@ -29,6 +30,8 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/productdb
 spring.datasource.username=your_username
 spring.datasource.password=your_password
 ```
+
+3. The database schema and sample data will be automatically created by Liquibase when the application starts.
 
 ## Running the Application
 
@@ -125,6 +128,49 @@ curl -X PUT http://localhost:8080/api/products/1 \
 curl -X DELETE http://localhost:8080/api/products/1
 ```
 
+## Liquibase Database Management
+
+This project uses Liquibase for database schema versioning and migration management.
+
+### Liquibase Commands
+
+#### Update database to latest version:
+```bash
+mvn liquibase:update
+```
+
+#### Check migration status:
+```bash
+mvn liquibase:status
+```
+
+#### Generate SQL for pending changes:
+```bash
+mvn liquibase:updateSQL
+```
+
+#### Rollback last changeset:
+```bash
+mvn liquibase:rollback -Dliquibase.rollbackCount=1
+```
+
+#### Clear all checksums:
+```bash
+mvn liquibase:clearCheckSums
+```
+
+### Migration Files
+
+- **Master changelog**: `src/main/resources/db/changelog/db.changelog-master.xml`
+- **Table creation**: `src/main/resources/db/changelog/001-create-products-table.xml`
+- **Sample data**: `src/main/resources/db/changelog/002-insert-sample-data.xml`
+
+### Adding New Migrations
+
+1. Create a new XML file in `src/main/resources/db/changelog/`
+2. Add the file reference to `db.changelog-master.xml`
+3. Run `mvn liquibase:update` to apply changes
+
 ## Project Structure
 
 ```
@@ -141,8 +187,12 @@ src/
 │   │           └── ProductRepository.java
 │   └── resources/
 │       ├── application.properties
-│       ├── schema.sql
-│       └── data.sql
+│       ├── liquibase.properties
+│       └── db/
+│           └── changelog/
+│               ├── db.changelog-master.xml
+│               ├── 001-create-products-table.xml
+│               └── 002-insert-sample-data.xml
 └── test/
     └── java/
         └── com/example/productapi/
@@ -152,6 +202,7 @@ src/
 
 - Spring Boot 3.2.0
 - Spring Data JPA
+- Liquibase 4.24.0
 - PostgreSQL
 - Maven
 - Java 17
