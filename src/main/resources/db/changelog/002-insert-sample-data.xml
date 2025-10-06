@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="002-insert-sample-data" author="system">
+        <comment>Insert sample product data</comment>
+        
+        <insert tableName="products">
+            <column name="name" value="Laptop"/>
+            <column name="quantity" valueNumeric="10"/>
+            <column name="price" valueNumeric="999.99"/>
+        </insert>
+        
+        <insert tableName="products">
+            <column name="name" value="Mouse"/>
+            <column name="quantity" valueNumeric="50"/>
+            <column name="price" valueNumeric="25.50"/>
+        </insert>
+        
+        <insert tableName="products">
+            <column name="name" value="Keyboard"/>
+            <column name="quantity" valueNumeric="30"/>
+            <column name="price" valueNumeric="75.00"/>
+        </insert>
+        
+        <insert tableName="products">
+            <column name="name" value="Monitor"/>
+            <column name="quantity" valueNumeric="15"/>
+            <column name="price" valueNumeric="299.99"/>
+        </insert>
+        
+        <insert tableName="products">
+            <column name="name" value="Headphones"/>
+            <column name="quantity" valueNumeric="25"/>
+            <column name="price" valueNumeric="149.99"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="products">
+                <where>name IN ('Laptop', 'Mouse', 'Keyboard', 'Monitor', 'Headphones')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
