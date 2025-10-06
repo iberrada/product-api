@@ -10,12 +10,20 @@ A Spring Boot REST API application for managing products with PostgreSQL databas
 - Input validation
 - CRUD operations (Create, Read, Update, Delete)
 - Maven project management
+- Docker containerization
+- GitLab CI/CD pipeline
+- Health checks and monitoring with Spring Boot Actuator
 
 ## Prerequisites
 
+### For Local Development:
 - Java 17 or higher
 - Maven 3.6 or higher
 - PostgreSQL 12 or higher
+
+### For Docker Development:
+- Docker 20.10 or higher
+- Docker Compose 2.0 or higher
 
 ## Database Setup
 
@@ -43,6 +51,54 @@ mvn spring-boot:run
 ```
 
 The application will start on `http://localhost:8080`
+
+## Docker Development
+
+### Using Docker Compose (Recommended)
+
+1. Start the application with PostgreSQL:
+```bash
+docker-compose up -d
+```
+
+2. Start with pgAdmin for database management:
+```bash
+docker-compose --profile tools up -d
+```
+
+3. Stop the application:
+```bash
+docker-compose down
+```
+
+4. Stop and remove volumes:
+```bash
+docker-compose down -v
+```
+
+### Using Docker Only
+
+1. Build the Docker image:
+```bash
+docker build -t product-api .
+```
+
+2. Run with external PostgreSQL:
+```bash
+docker run -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/productdb \
+  -e SPRING_DATASOURCE_USERNAME=postgres \
+  -e SPRING_DATASOURCE_PASSWORD=password \
+  product-api
+```
+
+### Access Points
+
+- **Application**: http://localhost:8080
+- **Health Check**: http://localhost:8080/actuator/health
+- **pgAdmin** (if using tools profile): http://localhost:5050
+  - Email: admin@example.com
+  - Password: admin
 
 ## API Endpoints
 
@@ -171,6 +227,60 @@ mvn liquibase:clearCheckSums
 2. Add the file reference to `db.changelog-master.xml`
 3. Run `mvn liquibase:update` to apply changes
 
+## GitLab CI/CD Pipeline
+
+This project includes a comprehensive GitLab CI/CD pipeline with the following stages:
+
+### Pipeline Stages
+
+1. **Validate**: Check project structure and resolve dependencies
+2. **Test**: Run unit tests with PostgreSQL integration
+3. **Build**: Compile the application
+4. **Package**: Create JAR file and Docker image
+5. **Deploy**: Deploy to different environments
+
+### Pipeline Features
+
+- **Automated Testing**: Unit and integration tests with coverage reporting
+- **Code Quality**: SonarQube integration (optional)
+- **Security Scanning**: OWASP dependency check
+- **Docker Build**: Automated container image creation
+- **Multi-Environment Deployment**: Development, Staging, and Production
+- **Caching**: Maven dependencies and build artifacts
+
+### Required GitLab Variables
+
+Set these variables in your GitLab project settings:
+
+#### Database (for testing)
+- `POSTGRES_DB`: productdb_test
+- `POSTGRES_USER`: postgres  
+- `POSTGRES_PASSWORD`: postgres
+
+#### SonarQube (optional)
+- `SONAR_HOST_URL`: Your SonarQube server URL
+- `SONAR_TOKEN`: SonarQube authentication token
+
+#### Deployment URLs
+- `DEV_APP_URL`: Development environment URL
+- `STAGING_APP_URL`: Staging environment URL  
+- `PROD_APP_URL`: Production environment URL
+
+### Running the Pipeline
+
+The pipeline runs automatically on:
+- **Merge Requests**: Validation and testing
+- **Main Branch**: Full pipeline including packaging
+- **Develop Branch**: Development deployment
+- **Tags**: Production deployment
+
+### Manual Jobs
+
+Some jobs require manual approval:
+- Code quality analysis
+- Environment deployments
+- Security scanning
+
 ## Project Structure
 
 ```
@@ -200,9 +310,11 @@ src/
 
 ## Technologies Used
 
-- Spring Boot 3.2.0
-- Spring Data JPA
-- Liquibase 4.24.0
-- PostgreSQL
-- Maven
-- Java 17
+- **Backend**: Spring Boot 3.2.0, Spring Data JPA, Spring Boot Actuator
+- **Database**: PostgreSQL, Liquibase 4.24.0
+- **Build Tool**: Maven
+- **Runtime**: Java 17
+- **Containerization**: Docker, Docker Compose
+- **CI/CD**: GitLab CI/CD
+- **Testing**: JUnit 5, H2 (for tests)
+- **Monitoring**: Spring Boot Actuator, Prometheus metrics

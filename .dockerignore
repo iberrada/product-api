@@ -1,0 +1,47 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# IDE
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+
+# Build artifacts
+target/
+!target/*.jar
+
+# Maven
+.m2
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.gitlab-ci.yml
+.github
+
+# Frontend
+frontend/
+
+# Test files
+src/test/
+
+# Temporary files
+*.tmp
+*.temp
